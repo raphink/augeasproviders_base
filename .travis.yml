@@ -35,71 +35,71 @@ matrix:
     ################
     # Puppet 2.7
     - env: AUGEAS=1.0.0 PUPPET=2.7.0 RUBY_AUGEAS=0.3.0
-      addons: &augeas-1.0.0
+      addons: &augeas-100
         apt:
           sources:
             - ppa:raphink/augeas-1.0.0
     # Puppet 3.4+
     - env: AUGEAS=1.0.0 PUPPET=3.4 RUBY_AUGEAS=0.3.0
-      addons: *augeas-1.0.0
+      addons: *augeas-100
     # With backported lenses
     - env: AUGEAS=1.0.0 PUPPET=3.4 RUBY_AUGEAS=0.3.0 LENSES=HEAD
-      addons: *augeas-1.0.0
-    # With ruby-augeas 0.5
+      addons: *augeas-100
+    # With ruby-augeas- 0.5
     - env: AUGEAS=1.0.0 PUPPET=3.4 RUBY_AUGEAS=0.5 LENSES=HEAD
-      addons: *augeas-1.0.0
+      addons: *augeas-100
 
     ################
     # augeas 1.1.0 #
     ################
     # Puppet 2.7
     - env: AUGEAS=1.1.0 PUPPET=2.7.0 RUBY_AUGEAS=0.3.0
-      addons: &augeas-1.1.0
+      addons: &augeas-110
         apt:
           sources:
             - ppa:raphink/augeas-1.1.0
     # Puppet 3.0
     - env: AUGEAS=1.1.0 PUPPET=3.0.0 RUBY_AUGEAS=0.3.0
-      addons: *augeas-1.1.0
+      addons: *augeas-110
     # Puppet 3.2
     - env: AUGEAS=1.1.0 PUPPET=3.2.0 RUBY_AUGEAS=0.3.0
-      addons: *augeas-1.1.0
+      addons: *augeas-110
     # Puppet 3.4+
     - env: AUGEAS=1.1.0 PUPPET=3.4 RUBY_AUGEAS=0.3.0
-      addons: *augeas-1.1.0
+      addons: *augeas-110
     # With backported lenses
     - env: AUGEAS=1.1.0 PUPPET=3.4 RUBY_AUGEAS=0.3.0 LENSES=HEAD
-      addons: *augeas-1.1.0
-    # With ruby-augeas 0.5
+      addons: *augeas-110
+    # With ruby-augeas- 0.5
     - env: AUGEAS=1.1.0 PUPPET=3.4 RUBY_AUGEAS=0.5 LENSES=HEAD
-      addons: *augeas-1.1.0
+      addons: *augeas-110
 
     ################
     # augeas 1.2.0 #
     ################
     # Puppet 2.7
     - env: AUGEAS=1.2.0 PUPPET=2.7.0 RUBY_AUGEAS=0.3.0
-      addons: &augeas-1.2.0
+      addons: &augeas-120
         apt:
           sources:
             - ppa:raphink/augeas-1.2.0
     # Puppet 3.4+
     - env: AUGEAS=1.2.0 PUPPET=3.4 RUBY_AUGEAS=0.3.0
-      addons: *augeas-1.2.0
+      addons: *augeas-120
 
     #################
     # augeas latest #
     #################
     # latest ruby-augeas (~>) & Puppet 3.2
     - env: PUPPET=3.2.0 RUBY_AUGEAS=0.5
-      addons: &augeas
+      addons: &augeas-latest
         apt:
           sources:
             - ppa:raphink/augeas
     # Puppet 3.4+
     # Use this build to publish on the forge
     - env: PUPPET=3.4 RUBY_AUGEAS=0.5 FORGE_PUBLISH=true
-      addons: *augeas
+      addons: *augeas-latest
 
   exclude:
     # No support for Ruby 2.0 before Puppet 3.2.0 and ruby-augeas 0.5
