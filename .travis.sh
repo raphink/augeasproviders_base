@@ -15,21 +15,7 @@ else
   else
     cd augeas && git fetch && git checkout $LENSES
   fi
-
-  PKG_VERSION="=${AUGEAS}*"
-  # Add PPA
-  sudo add-apt-repository -y ppa:raphink/augeas-1.0.0
-  sudo add-apt-repository -y ppa:raphink/augeas-1.1.0
-  sudo add-apt-repository -y ppa:raphink/augeas-1.2.0
-  sudo add-apt-repository -y ppa:raphink/augeas-1.3.0
 fi
-sudo add-apt-repository -y ppa:raphink/augeas
-sudo apt-get update
-sudo apt-get install augeas-tools${PKG_VERSION} \
-                     augeas-lenses${PKG_VERSION} \
-                     libaugeas0${PKG_VERSION} \
-                     libaugeas-dev${PKG_VERSION} \
-                     libxml2-dev
 
 # Install gems
 gem install bundler

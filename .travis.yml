@@ -1,5 +1,5 @@
 language: ruby
-sudo: required
+sudo: false
 rvm:
   - 1.8.7
   - 1.9.3
@@ -8,69 +8,141 @@ notifications:
   email:
    - dcleal@redhat.com
    - raphael.pinson@camptocamp.com
-env:
-# base env
-  # Most tests with oldest supported ruby-augeas
-  - PUPPET=2.7.0 RUBY_AUGEAS=0.3.0 AUGEAS=1.1.0
-  - PUPPET=3.0.0 RUBY_AUGEAS=0.3.0 AUGEAS=1.1.0
-  - PUPPET=3.2.0 RUBY_AUGEAS=0.3.0 AUGEAS=1.1.0
-  - PUPPET=3.4 RUBY_AUGEAS=0.3.0 AUGEAS=1.1.0
-  # Test the latest ruby-augeas (~>)
-  - PUPPET=3.2.0 RUBY_AUGEAS=0.5
-    # Use this build to publish on the forge
-  - PUPPET=3.4 RUBY_AUGEAS=0.5 FORGE_PUBLISH=true
-  # Test other versions of Augeas
-  - PUPPET=2.7.0 RUBY_AUGEAS=0.3.0 AUGEAS=0.10.0
-  - PUPPET=3.4 RUBY_AUGEAS=0.3.0 AUGEAS=0.10.0
-  - PUPPET=2.7.0 RUBY_AUGEAS=0.3.0 AUGEAS=1.0.0
-  - PUPPET=3.4 RUBY_AUGEAS=0.3.0 AUGEAS=1.0.0
-  - PUPPET=2.7.0 RUBY_AUGEAS=0.3.0 AUGEAS=1.1.0
-  - PUPPET=3.4 RUBY_AUGEAS=0.3.0 AUGEAS=1.1.0
-  - PUPPET=2.7.0 RUBY_AUGEAS=0.3.0 AUGEAS=1.2.0
-  - PUPPET=3.4 RUBY_AUGEAS=0.3.0 AUGEAS=1.2.0
-  # Issue #83: test old Augeas with new lenses
-  - PUPPET=3.4 RUBY_AUGEAS=0.3.0 AUGEAS=1.0.0 LENSES=HEAD
-  - PUPPET=3.4 RUBY_AUGEAS=0.3.0 AUGEAS=1.1.0 LENSES=HEAD
-  - PUPPET=3.4 RUBY_AUGEAS=0.5 AUGEAS=1.0.0 LENSES=HEAD
-  - PUPPET=3.4 RUBY_AUGEAS=0.5 AUGEAS=1.1.0 LENSES=HEAD
 
+apt:
+  addons:
+    packages:
+      - augeas-tools
+      - augeas-lenses
+      - libaugeas0
+      - libaugeas-dev
+      - libxml2-dev
 
 matrix:
   fast_finish: true
-  exclude:
-# base exclude
-    # No support for Ruby 2.0 before Puppet 3.2.0 and ruby-augeas 0.5
-    - rvm: 2.0.0
-      env: PUPPET=2.7.0 RUBY_AUGEAS=0.3.0 AUGEAS=1.1.0
-    - rvm: 2.0.0
-      env: PUPPET=3.0.0 RUBY_AUGEAS=0.3.0
-    - rvm: 2.0.0
-      env: PUPPET=3.2.0 RUBY_AUGEAS=0.3.0
-    - rvm: 2.0.0
-      env: PUPPET=3.4 RUBY_AUGEAS=0.3.0
-    - rvm: 2.0.0
-      env: PUPPET=2.7.0 RUBY_AUGEAS=0.3.0 AUGEAS=0.10.0
-    - rvm: 2.0.0
-      env: PUPPET=3.4 RUBY_AUGEAS=0.3.0 AUGEAS=0.10.0
-    - rvm: 2.0.0
-      env: PUPPET=2.7.0 RUBY_AUGEAS=0.3.0 AUGEAS=1.0.0
-    - rvm: 2.0.0
-      env: PUPPET=3.4 RUBY_AUGEAS=0.3.0 AUGEAS=1.0.0
-    - rvm: 2.0.0
-      env: PUPPET=2.7.0 RUBY_AUGEAS=0.3.0 AUGEAS=1.1.0
-    - rvm: 2.0.0
-      env: PUPPET=3.4 RUBY_AUGEAS=0.3.0 AUGEAS=1.1.0
-    - rvm: 2.0.0
-      env: PUPPET=2.7.0 RUBY_AUGEAS=0.3.0 AUGEAS=1.2.0
-    - rvm: 2.0.0
-      env: PUPPET=3.0.0 RUBY_AUGEAS=0.3.0 AUGEAS=1.1.0
-    - rvm: 2.0.0
-      env: PUPPET=3.4 RUBY_AUGEAS=0.3.0 AUGEAS=1.2.0
-    - rvm: 2.0.0
-      env: PUPPET=3.4 RUBY_AUGEAS=0.3.0 AUGEAS=1.0.0 LENSES=HEAD
-    - rvm: 2.0.0
-      env: PUPPET=3.4 RUBY_AUGEAS=0.3.0 AUGEAS=1.1.0 LENSES=HEAD
+  include:
 
+    #################
+    # augeas 0.10.0 #
+    #################
+    # Puppet 2.7
+    - env: AUGEAS=0.10.0 PUPPET=2.7.0 RUBY_AUGEAS=0.3.0
+    # Puppet 3.4+
+    - env: AUGEAS=0.10.0 PUPPET=3.4 RUBY_AUGEAS=0.3.0
+
+    ################
+    # augeas 1.0.0 #
+    ################
+    # Puppet 2.7
+    - env: AUGEAS=1.0.0 PUPPET=2.7.0 RUBY_AUGEAS=0.3.0
+      addons: &augeas-1.0.0
+        apt:
+          sources:
+            - ppa:raphink/augeas-1.0.0
+    # Puppet 3.4+
+    - env: AUGEAS=1.0.0 PUPPET=3.4 RUBY_AUGEAS=0.3.0
+      addons: *augeas-1.0.0
+    # With backported lenses
+    - env: AUGEAS=1.0.0 PUPPET=3.4 RUBY_AUGEAS=0.3.0 LENSES=HEAD
+      addons: *augeas-1.0.0
+    # With ruby-augeas 0.5
+    - env: AUGEAS=1.0.0 PUPPET=3.4 RUBY_AUGEAS=0.5 LENSES=HEAD
+      addons: *augeas-1.0.0
+
+    ################
+    # augeas 1.1.0 #
+    ################
+    # Puppet 2.7
+    - env: AUGEAS=1.1.0 PUPPET=2.7.0 RUBY_AUGEAS=0.3.0
+      addons: &augeas-1.1.0
+        apt:
+          sources:
+            - ppa:raphink/augeas-1.1.0
+    # Puppet 3.0
+    - env: AUGEAS=1.1.0 PUPPET=3.0.0 RUBY_AUGEAS=0.3.0
+      addons: *augeas-1.1.0
+    # Puppet 3.2
+    - env: AUGEAS=1.1.0 PUPPET=3.2.0 RUBY_AUGEAS=0.3.0
+      addons: *augeas-1.1.0
+    # Puppet 3.4+
+    - env: AUGEAS=1.1.0 PUPPET=3.4 RUBY_AUGEAS=0.3.0
+      addons: *augeas-1.1.0
+    # With backported lenses
+    - env: AUGEAS=1.1.0 PUPPET=3.4 RUBY_AUGEAS=0.3.0 LENSES=HEAD
+      addons: *augeas-1.1.0
+    # With ruby-augeas 0.5
+    - env: AUGEAS=1.1.0 PUPPET=3.4 RUBY_AUGEAS=0.5 LENSES=HEAD
+      addons: *augeas-1.1.0
+
+    ################
+    # augeas 1.2.0 #
+    ################
+    # Puppet 2.7
+    - env: AUGEAS=1.2.0 PUPPET=2.7.0 RUBY_AUGEAS=0.3.0
+      addons: &augeas-1.2.0
+        apt:
+          sources:
+            - ppa:raphink/augeas-1.2.0
+    # Puppet 3.4+
+    - env: AUGEAS=1.2.0 PUPPET=3.4 RUBY_AUGEAS=0.3.0
+      addons: *augeas-1.2.0
+
+    #################
+    # augeas latest #
+    #################
+    # latest ruby-augeas (~>) & Puppet 3.2
+    - env: PUPPET=3.2.0 RUBY_AUGEAS=0.5
+      addons: &augeas
+        apt:
+          sources:
+            - ppa:raphink/augeas
+    # Puppet 3.4+
+    # Use this build to publish on the forge
+    - env: PUPPET=3.4 RUBY_AUGEAS=0.5 FORGE_PUBLISH=true
+      addons: *augeas
+
+  exclude:
+    # No support for Ruby 2.0 before Puppet 3.2.0 and ruby-augeas 0.5
+
+    #################
+    # augeas 0.10.0 #
+    #################
+    - rvm: 2.0.0
+      env: AUGEAS=0.10.0 PUPPET=2.7.0 RUBY_AUGEAS=0.3.0
+    - rvm: 2.0.0
+      env: AUGEAS=0.10.0 PUPPET=3.4 RUBY_AUGEAS=0.3.0
+
+    ################
+    # augeas 1.0.0 #
+    ################
+    - rvm: 2.0.0
+      env: AUGEAS=1.0.0 PUPPET=2.7.0 RUBY_AUGEAS=0.3.0
+    - rvm: 2.0.0
+      env: AUGEAS=1.0.0 PUPPET=3.4 RUBY_AUGEAS=0.3.0
+    - rvm: 2.0.0
+      env: AUGEAS=1.0.0 PUPPET=3.4 RUBY_AUGEAS=0.3.0 LENSES=HEAD
+
+    ################
+    # augeas 1.1.0 #
+    ################
+    - rvm: 2.0.0
+      env: AUGEAS=1.1.0 PUPPET=2.7.0 RUBY_AUGEAS=0.3.0
+    - rvm: 2.0.0
+      env: AUGEAS=1.1.0 PUPPET=3.0.0 RUBY_AUGEAS=0.3.0
+    - rvm: 2.0.0
+      env: AUGEAS=1.1.0 PUPPET=3.2.0 RUBY_AUGEAS=0.3.0
+    - rvm: 2.0.0
+      env: AUGEAS=1.1.0 PUPPET=3.4 RUBY_AUGEAS=0.3.0
+    - rvm: 2.0.0
+      env: AUGEAS=1.1.0 PUPPET=3.4 RUBY_AUGEAS=0.3.0 LENSES=HEAD
+
+    ################
+    # augeas 1.2.0 #
+    ################
+    - rvm: 2.0.0
+      env: AUGEAS=1.2.0 PUPPET=2.7.0 RUBY_AUGEAS=0.3.0
+    - rvm: 2.0.0
+      env: AUGEAS=1.2.0 PUPPET=3.4 RUBY_AUGEAS=0.3.0
 
 install:
   - "travis_retry ./.travis.sh"
